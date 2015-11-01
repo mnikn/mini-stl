@@ -11,13 +11,13 @@ using std::cerr;using std::endl;
 #endif
 
 /**
- *      内存配置器，其中分为第一级内存配置器和第二级内存配置器，
+ *      空间配置器，其中分为第一级内存配置器和第二级内存配置器，
  * 为其他文件提供内存分配的方法。
  */
 namespace mstd{
 
     /**
-     *  第一级内存配置器，当要求分配的内存块大于128bytes时
+     *  第一级空间配置器，当要求分配的内存块大于128bytes时
      *使用该配置器，速度较第二级内存配置器慢。
      */
 
@@ -40,9 +40,9 @@ namespace mstd{
     typedef __malloc_alloc_template<0> malloc_alloc;
 
     /**
-     *  第二级内存配置器，当要求分配的内存块小于128bytes时
+     *  第二级空间配置器，当要求分配的内存块小于128bytes时
      *使用该配置器，因为使用内存池来分配内存，因而速度较第
-     * 一级内存配置器快。
+     * 一级空间配置器快。
      */
 
     template <bool threads,int inst>

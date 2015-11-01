@@ -10,7 +10,7 @@ using std::cerr;
 using std::endl;
 
 /**
- * 这是一个内存配置器，功能并不完善，建议使用alloc版本的内存配置器
+ * 这是一个空间配置器，功能并不完善，建议使用alloc版本的内存配置器
  */
 
 namespace mstd{

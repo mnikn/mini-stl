@@ -11,5 +11,8 @@ HEADERS += \
     Header/allocator.h \
     Header/alloc.h \
     Header/construct.h \
-    Header/uninitializedFunction.h
+    Header/uninitializedFunction.h \
+    Header/auto_ptr.h \
+    Header/iterator.h \
+    Header/type_traits.h
 
