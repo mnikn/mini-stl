@@ -30,13 +30,13 @@ namespace mstd {
         {
             pointee = p;
         }
-        pointer release() const
-        {
-            return get();
-        }
         pointer get() const
         {
             return pointee;
+        }
+        pointer release() const
+        {
+            return get();
         }
 
     public:

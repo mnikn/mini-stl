@@ -37,8 +37,6 @@ namespace mstd{
         static void (*set_malloc_handler(void (*f)()))();
     };
 
-    typedef __malloc_alloc_template<0> malloc_alloc;
-
     /**
      *  第二级空间配置器，当要求分配的内存块小于128bytes时
      *使用该配置器，因为使用内存池来分配内存，因而速度较第
@@ -75,9 +73,12 @@ namespace mstd{
     public:
         static void* allocate(size_t n);
         static void deallocate(void *p,size_t n);
-        static void* reallocate(void *p,size_t old_size,size_t new_size);
-
+        static void* reallocate(void *p,size_t new_size);
     };
+
+    typedef __malloc_alloc_template<0>                malloc_alloc;
+    typedef __default_malloc_template<0,0>          default_alloc;
+    typedef default_alloc                                        alloc;
 }
 
 #endif // ALLOC_H

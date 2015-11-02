@@ -211,7 +211,7 @@ namespace mstd {
     }
 
     template <bool threads,int inst>
-    void* __default_malloc_template<threads,inst>::reallocate(void *p, size_t old_size, size_t new_size)
+    void* __default_malloc_template<threads,inst>::reallocate(void *p, size_t new_size)
     {
         obj* volatile* my_free_list;
         obj *addr;

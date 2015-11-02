@@ -6,46 +6,19 @@
 #include <cstdlib>
 #include <climits>
 #include <cstddef>
+#include "Cpp/alloc.cpp"
+#include "Header/construct.h"
 using std::cerr;
 using std::endl;
 
 /**
- * 这是一个空间配置器，功能并不完善，建议使用alloc版本的内存配置器
+ * 这是一个空间配置器,使用alloc版本的内存配置器
  */
 
 namespace mstd{
 
     template <class T>
-    inline T* _allocate(ptrdiff_t size,T*)
-    {
-        T *p = (T*)(::operator new((size_t)(size*sizeof(T))));
-        if(p==0){
-            cerr<<"Out of memory!"<<endl;
-            exit(1);
-        }
-        return p;
-    }
-
-    template <class T>
-    inline void _deallocate(T *p)
-    {
-        ::operator delete(p);
-    }
-
-    template <class T1,class T2>
-    inline void _construct(T1 *p,const T2 &value)
-    {
-        new(p) T1(value);
-    }
-
-    template <class T>
-    inline void _destory(T *p)
-    {
-        p->~T();
-    }
-
-    template <class T>
-    class Allocator{
+    class allocator{
     public:
         typedef T                   value_type;
         typedef T*                  pointer;
@@ -58,28 +31,33 @@ namespace mstd{
     public:
         template <class U>
         struct rebind{
-            typedef Allocator<U> other;
+            typedef allocator<U> other;
         };
 
     public:
-        pointer allocate(size_type n,const void* hint = 0)
+        static pointer allocate(size_type n,const void* hint = 0)
         {
-            return _allocate( (differenc_type)n,(pointer)hint);
+            return (pointer)alloc::allocate(n);
         }
-        void deallocate(pointer p,size_type n)
+        static void deallocate(pointer p,size_type n)
         {
-            _deallocate(p);
+            alloc::deallocate(p,n);
         }
-        void construct(pointer p,const_reference value)
+        static void construct(pointer p,const_reference value)
         {
-            _construct(p,value);
+            __construct(p,value);
         }
-        void destory(pointer p)
+        static void destory(pointer p)
         {
-            _destory(p);
+            __destory(p);
+        }
+        template <class ForwardIterator>
+        static void destory(ForwardIterator first,ForwardIterator last)
+        {
+            __destory(first,last);
         }
 
-        pointer address(reference x)
+        static pointer address(reference x)
         {
             return (pointer)&x;
         }

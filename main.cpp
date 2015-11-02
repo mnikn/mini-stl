@@ -1,15 +1,10 @@
 #include <iostream>
-#include <vector>
-#include "Header/type_traits.h"
-#include "Header/iterator.h"
-#include "Header/alloc.h"
-#include "Header/auto_ptr.h"
+#include "Cpp/vector.cpp"
 using namespace mstd;
-using namespace std;
 
 int main()
 {
-    auto_ptr<string> s(new string("SS"));
+    vector<int> a;
     return 0;
 }
 
