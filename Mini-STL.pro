@@ -5,16 +5,11 @@ CONFIG -= qt
 CONFIG +=c++11
 
 SOURCES += main.cpp \
-    Cpp/alloc.cpp \
-    Cpp/vector.cpp
 
 HEADERS += \
-    Header/allocator.h \
-    Header/alloc.h \
-    Header/construct.h \
-    Header/uninitializedFunction.h \
-    Header/auto_ptr.h \
-    Header/iterator.h \
-    Header/type_traits.h \
-    Header/vector.h
+    Header\Alloc.h \
+    Header/Allocator.h \
+    Header/Construct.h \
+    Header/Iterator.h \
+    Header/Type_traits.h
 

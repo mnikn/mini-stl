@@ -1,10 +1,12 @@
 #include <iostream>
-#include "Cpp/vector.cpp"
+#include <vector>
+using std::cout;
+using std::endl;
+using std::vector;
 using namespace mstd;
 
 int main()
 {
-    vector<int> a;
     return 0;
 }
 

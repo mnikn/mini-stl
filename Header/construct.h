@@ -2,58 +2,22 @@
 #define CONSTRUCT_H
 
 #include <new>
-#include "Header/iterator.h"
-#include "Header/type_traits.h"
-using mstd::value_type;
-using mstd::__false_type;
-using mstd::__true_type;
-using mstd::__type_traits;
 
 /**
- * 定义了构造函数和析构函数以供其他文件使用
+ * 各容器构造函数和析构函数的原型
  */
-namespace mstd {
+namespace mstd{
 
-    template <class T1,class T2>
-    inline void __construct(T1 *p,const T2 &value)
+    template<class T1,class T2>
+    inline void construct(T1 *ptr,const T2 &value)
     {
-        new(p) T1(value);
+        new(ptr) T1(value);
     }
 
-    template <class T>
-    inline void __destory(T *p)
+    template<class T>
+    inline void destory(T *ptr)
     {
-        p->~T();
-    }
-
-    template <class ForwardIterator,class T>
-    inline void ___destory(ForwardIterator first,ForwardIterator last,T*)
-    {
-        typedef typename __type_traits<T>::has_trivial_destructor             trivial_destructor;
-        __destory_aux(first,last,trivial_destructor());
-    }
-
-    template <class ForwardIterator>
-    inline void __destory(ForwardIterator first,ForwardIterator last)
-    {
-        ___destory(first,last,value_type(first));
-    }
-
-
-
-    template <class ForwardIterator>
-    inline void __destory_aux(ForwardIterator first,ForwardIterator last,__false_type)
-    {
-        while(first!=last){
-            __destory(&*first);
-            ++first;
-        }
-    }
-
-    template <class ForwardIterator>
-    inline void __destory_aux(ForwardIterator first,ForwardIterator last,__true_type)
-    {
-        if(first&&last) return;
+        ptr->~T();
     }
 
 
