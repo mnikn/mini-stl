@@ -6,6 +6,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <climits>
+using std::cout;
+using std::ends;
+using std::endl;
 using std::set_new_handler;
 using std::cerr;
 
@@ -48,13 +51,29 @@ public:
 typedef __new_alloc_template<0>         new_alloc;
 typedef new_alloc                                 alloc;
 
+/**
+ * 一个简单的空间配置器接口,以供容器使用
+ */
 template <class T,class Alloc>
 class simple_alloc{
 public:
-    static T* allocate(size_t);
-    static T* allocate(void);
-    static void deallocate(T*);
-    static void deallocate(T*,size_t);
+    static T* allocate(size_t n)
+    {
+        return (T*)(Alloc::allocate(n));
+    }
+    static T* allocate(void)
+    {
+    }
+    static void deallocate(T *ptr)
+    {
+        Alloc::deallocate(ptr);
+    }
+    static void deallocate(T *ptr,size_t n)
+    {
+        while(n--){
+            Alloc::deallocate(ptr++);
+        }
+    }
 };
 
 }

@@ -51,10 +51,9 @@ struct iterator_traits<const T*>{
 };
 
 template <class Iterator>
-inline typename Iterator::value_type value_type(Iterator)
+inline typename iterator_traits<Iterator>::value_type* value_type(const Iterator&)
 {
-    typedef typename iterator_traits<Iterator>::value_type value_type;
-    return value_type();
+    return static_cast<typename iterator_traits<Iterator>::value_type*>(0);
 }
 
 template <class Iterator>

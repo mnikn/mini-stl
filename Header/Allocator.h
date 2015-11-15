@@ -32,7 +32,7 @@ public:
     static T* allocate(ptrdiff_t size)
     {
         set_new_handler(0);
-        T *result = (T*)(::operator new(size_t(size*sizeof(T))));
+        T *result = (T*)(::operator new((size_t)(size*sizeof(T))));
         if(result ==0){
             cerr<<"Out of memory!";
             exit(1);

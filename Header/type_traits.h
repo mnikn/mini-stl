@@ -1,6 +1,10 @@
 #ifndef TYPE_TRAITS_H
 #define TYPE_TRAITS_H
 
+
+/**
+ * 对于各种类型的特性进行设定，以供内存管理器使用
+ */
 namespace mstd{
 
     struct __true_type {};
