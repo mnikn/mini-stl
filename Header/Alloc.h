@@ -9,7 +9,6 @@
 using std::cout;
 using std::ends;
 using std::endl;
-using std::set_new_handler;
 using std::cerr;
 
 /**
@@ -21,35 +20,83 @@ namespace mstd{
  * 第一级的空间配置器，处理分配的内存大于128bytes的情况
  */
 template <int inst>
-class __new_alloc_template{
-public:
-    static void* allocate(ptrdiff_t size)
+class __malloc_alloc_template{
+private:
+    static void* oom_malloc(size_t size)
     {
-        set_new_handler(0);
-        void *result = (void*)(size_t(::operator new(size)));
+        void (* my_malloc_handler)();
+        void * result;
+
+        while(true){
+            my_malloc_handler = __malloc_oom_handler;
+            if(my_malloc_handler == 0){
+                cerr<<"Out of memory!";
+                exit(1);
+            }
+            (*my_malloc_handler)();
+            result = malloc(size);
+            if(result){
+                return result;
+            }
+        }
+    }
+    static void* oom_realloc(void *ptr,size_t size)
+    {
+        void (*my_malloc_handler)();
+        void *result;
+
+        while(true){
+            my_malloc_handler = __malloc_oom_handler;
+            if(my_malloc_handler == 0){
+                cerr<<"Out of memory";
+                exit(1);
+            }
+            (*my_malloc_handler)();
+            result = realloc(ptr,size);
+            if(result){
+                return result;
+            }
+        }
+    }
+
+    static void (*__malloc_oom_handler)();
+
+public:
+    static void* allocate(size_t size)
+    {
+        void *result = malloc(size);
         if(result==0){
-            cerr<<"Out of memory!";
-            exit(1);
+            result = oom_malloc(size);
         }
         return result;
     }
     static void deallocate(void *ptr)
     {
-        ::operator delete(ptr);
+        free(ptr);
     }
     static void* reallocate(void *ptr,size_t new_sz)
     {
         void *result = realloc(ptr,new_sz);
         if(result==0){
-            cerr<<"Out of memory";
-            exit(1);
+            result = oom_realloc(ptr,new_sz);
         }
         return result;
     }
+
+
+    static void (*set_malloc_handler(void(*f)()))()
+    {
+        void (* old)() = __malloc_oom_handler;
+        __malloc_oom_handler = f;
+        return old;
+    }
 };
 
-typedef __new_alloc_template<0>         new_alloc;
-typedef new_alloc                                 alloc;
+template <int inst>
+void (* __malloc_alloc_template<inst>::__malloc_oom_handler)() = 0;
+
+typedef __malloc_alloc_template<0>         malloc_alloc;
+typedef malloc_alloc                                 alloc;
 
 /**
  * 一个简单的空间配置器接口,以供容器使用
@@ -59,7 +106,7 @@ class simple_alloc{
 public:
     static T* allocate(size_t n)
     {
-        return (T*)(Alloc::allocate(n));
+        return static_cast<T*>(Alloc::allocate(n));
     }
     static T* allocate(void)
     {

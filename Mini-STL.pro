@@ -14,5 +14,6 @@ HEADERS += \
     Header/Type_traits.h \
     Header/Algorithm.h \
     Header/Uninitialize_funtion.h \
-    Header/Vector.h
+    Header/Vector.h \
+    Test/VectorTest.h
 

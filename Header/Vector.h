@@ -36,65 +36,26 @@ protected:
 
 //辅助函数
 protected:
-    iterator allocate_and_fill(size_type n,const_reference e)
-    {
-        iterator result = data_allocator::allocate(n);
-        uninitialize_fill_n(result,n,e);
-        return result;
-    }
-    void fill_initialize(size_type n,const_reference e)
-    {
-        start = allocate_and_fill(n,e);
-        finish = start + n;
-        end_of_storage = finish;
-    }
-    void deallocate()
-    {
-        if(start){
-            data_allocator::deallocate(start,end_of_storage-start);
-        }
-    }
-    void insert_aux(iterator pos,const_reference e)
-    {
-        //当还有可用空间时
-        if(finish!=end_of_storage){
-            construct(finish,*(finish-1));
-            ++finish;
-            value_type e_copy = e;
-            copy_backward(pos,finish-2,finish-1);
-            *pos = e_copy;
-        }
-        else{
-            const size_type old_size = size();
-            const size_type len = (old_size!=0?2*old_size:1);
-            iterator new_start = data_allocator::allocate(len);
-            iterator new_finish = new_start;
+    void allocate(size_type n);
+    void allocate_and_fill(size_type n,const_reference e);
+    template <class InputIterator>
+    void allocate_and_copy(size_type n,InputIterator first,InputIterator last);
+    void deallocate_and_destory_all();
+    void insert_aux(iterator pos,const_reference e);
 
 
-            new_finish = uninitialize_copy(start,pos,new_start);//复制前段
-            construct(new_finish++,e);
-            new_finish = uninitialize_copy(pos,finish,new_finish);//复制后段
-
-            destory(begin(),end());
-            deallocate();
-
-            start = new_start;
-            finish = new_finish;
-            end_of_storage = start+len;
-        }
-    }
 
 
 //构造函数与析构函数
 public:
     vector() :start(nullptr),finish(nullptr),end_of_storage(nullptr) {}
-    explicit vector(size_type n)                                { fill_initialize(n,value_type()); }
-    vector(size_type n,const_reference e)                { fill_initialize(n,e); }
-    vector(const vector<T,Alloc> &v)                     { uninitialize_copy(v.begin(),v.end(),start); }
+    explicit vector(size_type n)                                { allocate_and_fill(n,value_type()); }
+    vector(size_type n,const_reference e)                { allocate_and_fill(n,e); }
+    vector(const vector<T,Alloc> &v)                     { allocate_and_copy(v.size(),v.begin(),v.end()); }
     template <size_type N>
-    vector(const value_type (&array)[N] )               { uninitialize_copy(array,array+N,start); }
-    vector(const initializer_list<T> &i)                    { uninitialize_copy(i.begin(),i.end(),start); }
-    ~vector()                                                         { destory(start,finish);deallocate(); }
+    vector(const value_type (&array)[N] )               { allocate_and_copy(N,array,array+N); }
+    vector(const initializer_list<T> &i)                    { allocate_and_copy(i.size(),i.begin(),i.end()); }
+    ~vector()                                                         { deallocate_and_destory_all(); }
 
 
 
@@ -103,6 +64,7 @@ public:
 
 //接口的声明
 public:
+
     iterator begin() const;
     const_iterator cbegin() const;
     iterator end() const;
@@ -112,6 +74,10 @@ public:
     size_type size() const;
     size_type capacity() const;
     void push_back(const_reference e);
+    void insert(iterator pos,const_reference e);
+    T pop_back();
+    T erase(iterator pos);
+    void clear();
 
 
 
@@ -120,7 +86,39 @@ public:
 public:
     reference operator[](size_type index)
     {
-        return *(start+index);
+        return *(start + index);
+    }
+    const_reference operator[](size_type index) const
+    {
+        return *(start + index);
+    }
+    vector<T,Alloc>& operator=(const vector<T,Alloc> &v)
+    {
+        allocate_and_copy(v.size(),v.begin(),v.end());
+        return *this;
+    }
+    template <size_type N>
+    vector<T,Alloc>& operator=(const value_type (&array)[N])
+    {
+        allocate_and_copy(N,array,array+N);
+        return *this;
+    }
+    vector<T,Alloc>& operator=(const initializer_list<T> &i)
+    {
+        allocate_and_copy(i.size(),i.begin(),i.end());
+        return *this;
+    }
+    bool operator==(const vector<T,Alloc> &v)
+    {
+        if(size() != v.size()) return false;
+        for(size_type i = 0;i < size();++i) if(*this[i] != v[i]) return false;
+        return true;
+    }
+    bool operator!=(const vector<T,Alloc> &v)
+    {
+        if(size() != v.size()) return true;
+        for(size_type i = 0;i < size();++i) if(*this[i] != v[i]) return true;
+        return false;
     }
 };
 
@@ -131,6 +129,66 @@ public:
 /*******************************************/
 /***************接口的实现****************/
 /*******************************************/
+
+template <class T,class Alloc>
+void vector<T,Alloc>::allocate(size_type n)
+{
+    start = data_allocator::allocate(n);
+    finish = start + n;
+    end_of_storage = finish;
+}
+
+template <class T,class Alloc>
+void vector<T,Alloc>::allocate_and_fill(size_type n,const_reference e)
+{
+    allocate(n);
+    uninitialize_fill_n(start,n,e);
+}
+
+template <class T,class Alloc>
+template <class InputIterator>
+void vector<T,Alloc>::allocate_and_copy(size_type n,InputIterator first,InputIterator last)
+{
+    allocate(n);
+    uninitialize_copy(first,last,start);
+}
+
+template <class T,class Alloc>
+void vector<T,Alloc>::deallocate_and_destory_all()
+{
+    if(start){
+        data_allocator::deallocate(start,capacity());
+        destory(start,end_of_storage);
+    }
+}
+
+template <class T,class Alloc>
+void vector<T,Alloc>::insert_aux(iterator pos,const_reference e)
+{
+    //当还有可用空间时
+    if(finish!=end_of_storage){
+        construct(finish,*(finish - 1));
+        ++finish;
+        value_type e_copy = e;
+        copy_backward(pos,finish - 2,finish - 1);
+        *pos = e_copy;
+    }
+    else{
+        const size_type old_size = size();
+        const size_type len = (old_size !=0 ? old_size*2 : 1);
+
+        T tmp[size()];
+        difference_type size_a = pos - start,size_b = finish - pos;
+        copy(start,finish,tmp);
+
+        finish = copy_n(tmp,size_a,start);//复制前段
+        construct(finish++,e);
+        finish = copy_n(tmp + size_a,size_b,finish);//复制后段
+
+        end_of_storage = start + len;
+
+    }
+}
 
 template <class T,class Alloc>
 typename vector<T,Alloc>::iterator vector<T,Alloc>::begin() const
@@ -183,12 +241,46 @@ typename vector<T,Alloc>::size_type vector<T,Alloc>::capacity() const
 template <class T,class Alloc>
 void vector<T,Alloc>::push_back(const_reference e)
 {
-    if(finish!=end_of_storage){
+    if(finish != end_of_storage){
         construct(finish++,e);
     }
     else{
         insert_aux(finish,e);
     }
+}
+
+template <class T,class Alloc>
+void vector<T,Alloc>::insert(iterator pos,const_reference e)
+{
+    insert_aux(pos,e);
+}
+
+template <class T,class Alloc>
+T vector<T,Alloc>::pop_back()
+{
+    const_reference tmp = back(),n = size();
+    destory(finish);
+    finish = start + n - 1;
+    return tmp;
+}
+
+template <class T,class Alloc>
+T vector<T,Alloc>::erase(iterator pos)
+{
+    T tmp = *pos;
+    if(pos+1 != end()){
+        copy(pos+1,finish,pos);
+    }
+    --finish;
+    destory(finish);
+    return tmp;
+}
+
+template <class T,class Alloc>
+void vector<T,Alloc>::clear()
+{
+    destory(start,finish);
+    finish = start;
 }
 
 }
