@@ -15,5 +15,9 @@ HEADERS += \
     Header/Algorithm.h \
     Header/Uninitialize_funtion.h \
     Header/Vector.h \
-    Test/VectorTest.h
+    Test/VectorTest.h \
+    Header/List.h \
+    Detail/Vector.impl.h \
+    Detail/List.impl.h \
+    Test/ListTest.h
 

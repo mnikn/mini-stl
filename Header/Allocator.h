@@ -14,56 +14,56 @@ using std::cerr;
  */
 namespace mstd{
 
-template <class T>
-class allocator{
-public:
-    typedef T                       value_type;
-    typedef T*                      pointer;
-    typedef const T*             const_pointer;
-    typedef T&                     reference;
-    typedef const T&            const_reference;
+    template <class T>
+    class allocator{
+    public:
+        typedef T                       value_type;
+        typedef T*                      pointer;
+        typedef const T*             const_pointer;
+        typedef T&                     reference;
+        typedef const T&            const_reference;
 
-public:
-    template <class U>
-    struct rebind{
-        typedef allocator<U> other;
-    };
+    public:
+        template <class U>
+        struct rebind{
+            typedef allocator<U> other;
+        };
 
-    static T* allocate(ptrdiff_t size)
-    {
-        set_new_handler(0);
-        T *result = (T*)(::operator new((size_t)(size*sizeof(T))));
-        if(result ==0){
-            cerr<<"Out of memory!";
-            exit(1);
+        static T* allocate(ptrdiff_t size)
+        {
+            set_new_handler(0);
+            T *result = (T*)(::operator new((size_t)(size*sizeof(T))));
+            if(result ==0){
+                cerr<<"Out of memory!";
+                exit(1);
+            }
+            return result;
         }
-        return result;
-    }
-    static void deallocate(T* ptr,size_t)
-    {
-        ::operator delete(ptr);
-    }
-    static void construct(T *ptr,const T &value)
-    {
-        new(ptr) T(value);
-    }
-    static void destory(T *ptr)
-    {
-        ptr->~T();
-    }
-    T* address(T &ptr) const
-    {
-        return (T*)(&ptr);
-    }
-    const T* const_address(const T &ptr) const
-    {
-        return (const T*)(&ptr);
-    }
-    size_t max_size() const
-    {
-        return UINT_MAX/sizeof(T);
-    }
-};
+        static void deallocate(T* ptr,size_t)
+        {
+            ::operator delete(ptr);
+        }
+        static void construct(T *ptr,const T &value)
+        {
+            new(ptr) T(value);
+        }
+        static void destory(T *ptr)
+        {
+            ptr->~T();
+        }
+        T* address(T &ptr) const
+        {
+            return (T*)(&ptr);
+        }
+        const T* const_address(const T &ptr) const
+        {
+            return (const T*)(&ptr);
+        }
+        size_t max_size() const
+        {
+            return UINT_MAX/sizeof(T);
+        }
+    };
 
 }
 

@@ -16,12 +16,22 @@ namespace mstd{
         new(ptr) T1(value);
     }
 
+    template<class InputIterator>
+    inline void construct(InputIterator first,InputIterator last)
+    {
+        typedef typename iterator_traits<InputIterator>::value_type         value_type;
+        while(first!=last) { new(first++) value_type(*first); }
+    }
+
+
+    /********************************************************************/
+    /*******destory函数，函数名前有双下划线的均为辅助函数********/
+    /*******************************************************************/
+
     template <class ForwardIterator>
     inline void __destory_aux(ForwardIterator first,ForwardIterator last,__false_type)
     {
-        while(first!=last){
-            destory(first++);
-        }
+        while(first!=last)  destory(first++);
     }
 
     template <class ForwardIterator>
@@ -42,12 +52,14 @@ namespace mstd{
     }
 
 
+    //实际调用的destory函数，应用于单个指针的情况
     template<class T>
     inline void destory(T *ptr)
     {
         ptr->~T();
     }
 
+    //实际调用的destory函数，应用于一段区间的情况
     template <class ForwardIterator>
     inline void destory(ForwardIterator first,ForwardIterator last)
     {
