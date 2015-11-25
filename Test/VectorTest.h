@@ -38,8 +38,6 @@ void test_case3()
     a.insert(a.begin()+1,6);
     assert(a[0]==4&&a[1]==6);
 
-    a.erase(a.begin(),a.end());
-    assert(a.empty());
 }
 
 void test_all()

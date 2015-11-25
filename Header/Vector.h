@@ -51,6 +51,7 @@ namespace mstd{
         template <size_type N>
         vector(const value_type (&array)[N] )               { allocate_and_copy(N,array,array+N); }
         vector(const initializer_list<T> &i)                    { allocate_and_copy(i.size(),i.begin(),i.end()); }
+        vector(iterator first,iterator last)                       { allocate_and_copy(static_cast<size_type>(last-first),first,last); }
         ~vector()                                                         { deallocate_and_destory_all(); }
 
 
@@ -72,11 +73,13 @@ namespace mstd{
         size_type size() const                  { return static_cast<size_type>(finish - start); }
         bool empty() const                     { return size()==0; }
         size_type capacity() const           { return end_of_storage - start; }
+        void reserver(size_type n)           { end_of_storage = start+n; }
+        void resize(size_type n);
 
         //修改容器相关
         void clear();
         void push_back(const_reference e);
-        T pop_back();
+        value_type pop_back();
         template <class InputIterator> void insert(iterator pos,InputIterator first,InputIterator last);
         void insert(iterator pos,const_reference e);
         iterator erase(iterator pos);
@@ -87,29 +90,16 @@ namespace mstd{
     public:
         reference operator[](size_type index)                       { return *(start + index); }
         const_reference operator[](size_type index) const    { return *(start + index); }
-
         vector<T,Alloc>& operator=(const vector<T,Alloc> &v)
         { allocate_and_copy( v.size() , v.begin() , v.end() ); return *this; }
-
         template <size_type N>
         vector<T,Alloc>& operator=(const value_type (&array)[N])
         { allocate_and_copy( N , array , array + N ); return *this; }
-
         vector<T,Alloc>& operator=(const initializer_list<T> &i)
         { allocate_and_copy( i.size() , i.begin() , i.end() ); return *this; }
+        bool operator==(const vector<T,Alloc> &v) const;
+        bool operator!=(const vector<T,Alloc> &v) const;
 
-        bool operator==(const vector<T,Alloc> &v)
-        {
-            if(size() != v.size()) return false;
-            for(size_type i = 0;i < size();++i) if((*this)[i] != v[i]) return false;
-            return true;
-        }
-        bool operator!=(const vector<T,Alloc> &v)
-        {
-            if(size() != v.size()) return true;
-            for(size_type i = 0;i < size();++i) if(*this[i] != v[i]) return true;
-            return false;
-        }
     };
 
 }

@@ -8,6 +8,14 @@
  */
 namespace mstd{
 
+    template <class T>
+    inline void swap(T &a,T &b)
+    {
+        T tmp = a;
+        a  = b;
+        b = tmp;
+    }
+
     template <class ForwardIterator,class T>
     inline void fill(ForwardIterator first,ForwardIterator last,const T &value)
     {
@@ -50,6 +58,12 @@ namespace mstd{
             *result-- = *first++;
         }
         return result;
+    }
+
+    template <class InputIterator>
+    inline void reverse(InputIterator first,InputIterator last)
+    {
+        while(first != --last)  swap(*first++,*last);
     }
 
 }

@@ -6,7 +6,8 @@
  * STL中的主要算法,如sort,find等
  
 ## 开发进度
- * 空间配置器     70%
+ * 空间配置器     60%
  * iterator       70%
  * type_traits    90%
- * vector         30%
+ * vector         90%
+ * list           90%

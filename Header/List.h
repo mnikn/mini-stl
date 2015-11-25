@@ -7,6 +7,7 @@
 #include "Construct.h"
 #include "Uninitialize_funtion.h"
 using std::initializer_list;
+using std::ostream;
 
 /**
  * 列表，线性容器，读取和写入数据复杂度为O(n)，插入和删除复杂度为O(1)
@@ -35,6 +36,7 @@ namespace mstd{
     template <class T>
     struct __list_iterator{
 
+
         typedef __list_iterator<T>                                       iterator;
         typedef __list_node<T>*                                         link_type;
         typedef bidirectional_iterator_tag                           iterator_category;
@@ -50,6 +52,7 @@ namespace mstd{
         __list_iterator() = default;
         __list_iterator(const iterator &i):node(i.node){}
 
+
         bool operator==(const iterator &i)                      { return node == i.node; }
         bool operator!=(const iterator &i)                       { return node != i.node; }
         reference operator*()                                          { return node->data; }
@@ -61,17 +64,12 @@ namespace mstd{
         iterator& operator+=(difference_type n)             { while(n--) node = node->next; return *this;}
         iterator& operator-=(difference_type n)              { while(n--) node = node->prev; return *this;}
 
-        friend iterator operator+(iterator &i,difference_type n)
-        {
-            while(n--)  i.node = i.node->next;
-            return i;
-        }
-        friend iterator operator-(iterator &i,difference_type n)
-        {
-            while(n--)  i.node = i.node->prev;
-            return i;
-        }
-
+        friend iterator operator+(iterator i,difference_type n)
+        { while(n--)   i.node = i.node->next; return i; }
+        friend iterator operator-(iterator i,difference_type n)
+        { while(n--)   i.node = i.node->prev; return i; }
+        friend ostream& operator<<(ostream &os,iterator i)
+        { os<<i.node; return os; }
 
     };
 
@@ -102,25 +100,27 @@ namespace mstd{
     //辅助函数
     protected:
         link_type allocate_node();
-        link_type allocate_some_node(size_type n);
+        void allocate_some_node(size_type n);
         void deallocate_node(link_type p);
         link_type create_node(const_reference e);
         void destory_node(link_type p);
-        void destory_all_node();
         void empty_initialize();
 
 
     //构造函数和析构函数
     public:
-        list()                                                  { empty_initialize(); }
+        list()
+        { empty_initialize(); }
+        list(size_type n)
+        { allocate_some_node(n); }
+        list(iterator first,iterator last)
+        { allocate_some_node(static_cast<size_type>(last-first)); copy(first,last,begin()); }
         list(const initializer_list<T> &i)
-        {
-            empty_initialize();
-            allocate_some_node(i.size());
-            //uninitialize_copy(i.begin(),i.end(),begin());
-            //_size = i.size();
-        }
-        ~list() { }
+        { allocate_some_node(i.size()); copy( i.begin() , i.end() , begin() ); }
+        list(list<T,Alloc> &l)
+        { allocate_some_node(l.size()); copy( l.begin() , l.end() , begin() ); }
+        ~list()
+        { clear(); destory_node(header); destory_node(trailer); }
 
 
     //接口的声明
@@ -144,8 +144,10 @@ namespace mstd{
         void clear();
         void push_front(const_reference  e);
         void push_back(const_reference e);
+        value_type pop_front();
+        value_type pop_back();
         iterator insert(iterator pos,const_reference e);
-        iterator erase(iterator pos,const_reference e);
+        value_type erase(iterator pos);
 
 
     //运算符的重载
@@ -154,6 +156,12 @@ namespace mstd{
         { iterator tmp = begin(); while(i--) ++tmp; return *tmp; }
         const_reference operator[](size_type i) const
         { return static_cast<const_reference>(*this[i]); }
+        list<T,Alloc>& operator=(initializer_list<T> &i)
+        { allocate_some_node(i.size()); copy( i.begin() , i.end() , begin() ); return *this; }
+        list<T,Alloc>& operator=(list<T,Alloc> &l)
+        { allocate_some_node(l.size()); copy( l.begin() , l.end() , begin() ); return *this; }
+        bool operator==(list<T,Alloc> &l);
+        bool operator!=(list<T,Alloc> &l);
 
     };
 
