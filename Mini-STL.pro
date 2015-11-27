@@ -19,5 +19,7 @@ HEADERS += \
     Header/List.h \
     Detail/Vector.impl.h \
     Detail/List.impl.h \
-    Test/ListTest.h
+    Test/ListTest.h \
+    Header/Deque.h \
+    Detail/Deque.impl.h
 

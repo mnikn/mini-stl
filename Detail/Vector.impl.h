@@ -115,19 +115,18 @@ namespace mstd{
     template <class T,class Alloc>
     typename vector<T,Alloc>::iterator vector<T,Alloc>::erase(iterator pos)
     {
-        iterator tmp = pos;
-        if(pos+1 != end()){
-            copy(pos+1,finish,pos);
-        }
-        --finish;
-        destory(finish);
-        return tmp;
+        return erase(pos,pos+1);
     }
 
     template <class T,class Alloc>
     typename vector<T,Alloc>::iterator vector<T,Alloc>::erase(iterator first,iterator last)
     {
-        while(first!=last) erase(first++);
+        if(last!=end()){
+            copy(last,finish,first);
+        }
+        size_type n = static_cast<size_type>(last - first);
+        finish -= n;
+        destory(finish,finish + n);
         return last;
     }
 

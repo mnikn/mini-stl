@@ -60,9 +60,9 @@ namespace mstd{
 
         //迭代器相关
         iterator begin() const                  { return start; }
-        const_iterator cbegin() const       { return start; }
+        const_iterator cbegin() const       { return static_cast<const_iterator>(begin()); }
         iterator end() const                     { return finish; }
-        const_iterator cend() const          { return finish; }
+        const_iterator cend() const          { return static_cast<const_iterator>(end()); }
 
         //访问元素相关
         reference at(size_type i) const     { return *(start+i); }

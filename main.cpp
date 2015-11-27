@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Test/VectorTest.h"
+#include "Header/Deque.h"
 #include "Header/Algorithm.h"
 using std::cout;
 using std::ends;

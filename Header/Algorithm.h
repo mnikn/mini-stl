@@ -9,6 +9,12 @@
 namespace mstd{
 
     template <class T>
+    inline T max(const T &a,const T &b)
+    {
+        return (a > b? a : b);
+    }
+
+    template <class T>
     inline void swap(T &a,T &b)
     {
         T tmp = a;

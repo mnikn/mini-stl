@@ -56,18 +56,15 @@ namespace mstd{
         bool operator==(const iterator &i)                      { return node == i.node; }
         bool operator!=(const iterator &i)                       { return node != i.node; }
         reference operator*()                                          { return node->data; }
-        pointer operator->()                                           { return node;}
+        pointer operator->()                                           { return node; }
         iterator& operator++()                                       { node = node->next; return *this; }
-        iterator operator++(int)                                      { iterator tmp = *this; node = node->next; return tmp; }
+        iterator operator++(int)                                      { iterator tmp = *this; ++*this; return tmp; }
         iterator& operator--()                                         { node = node->prev; return *this; }
-        iterator operator--(int)                                        { iterator tmp = *this; node = node->prev; return tmp; }
-        iterator& operator+=(difference_type n)             { while(n--) node = node->next; return *this;}
-        iterator& operator-=(difference_type n)              { while(n--) node = node->prev; return *this;}
-
-        friend iterator operator+(iterator i,difference_type n)
-        { while(n--)   i.node = i.node->next; return i; }
-        friend iterator operator-(iterator i,difference_type n)
-        { while(n--)   i.node = i.node->prev; return i; }
+        iterator operator--(int)                                        { iterator tmp = *this; --*this; return tmp; }
+        iterator& operator+=(difference_type n)             { while(n--) { node = node->next; } return *this; }
+        iterator& operator-=(difference_type n)              { while(n--) { node = node->prev; } return *this; }
+        iterator operator+(difference_type n)                  { iterator tmp = *this; return tmp += n; }
+        iterator operator-(difference_type n)                   { iterator tmp = *this; return tmp -= n; }
         friend ostream& operator<<(ostream &os,iterator i)
         { os<<i.node; return os; }
 
@@ -80,7 +77,6 @@ namespace mstd{
     protected:
         typedef __list_node<T>                                          list_node;
         typedef list_node*                                                  link_type;
-        typedef simple_alloc<list_node,Alloc>                    allocator_type;
         typedef T                                                               value_type;
         typedef __list_iterator<T>                                       iterator;
         typedef const __list_iterator<T>                              const_iterator;
@@ -88,6 +84,10 @@ namespace mstd{
         typedef const T&                                                    const_reference;
         typedef size_t                                                          size_type;
         typedef ptrdiff_t                                                      difference_type;
+
+
+    protected:
+        typedef simple_alloc<list_node,Alloc>                     allocator_type;
 
 
     //成员变量
@@ -105,7 +105,7 @@ namespace mstd{
         link_type create_node(const_reference e);
         void destory_node(link_type p);
         void empty_initialize();
-
+        void transfer(iterator pos,iterator first,iterator last);
 
     //构造函数和析构函数
     public:
