@@ -2,8 +2,14 @@
 #define DEQUE_H
 
 #include "Alloc.h"
+#include "Uninitialize_funtion.h"
 #include "Iterator.h"
 
+
+/**
+ * 双头队列，元素的空间位置连续，空间由map来控制，
+ * 一个map里面有一段连续的内存空间，map与map之间不连续
+ */
 namespace mstd{
 
     inline size_t __deque_buf_size(size_t n,size_t size)
@@ -30,6 +36,8 @@ namespace mstd{
         pointer last;
         map_pointer node;
 
+
+        __deque_iterator() = default;
 
         static size_type buffer_size() { return __deque_buf_size(BufSize,sizeof(T)); }
         void set_node(map_pointer new_node)
@@ -137,7 +145,9 @@ namespace mstd{
 
 
     protected:
+        void allocate_node();
         void create_map_and_node(size_type num_elements);
+        void fill_initialize(size_type n,const_reference value);
 
 
     //成员变量
@@ -150,7 +160,8 @@ namespace mstd{
 
     //构造函数和析构函数
     public:
-        deque()                                                            {}
+        //deque(size_type n,const_reference value):start(0),finish(0),map(0),map_size(0)  { fill_initialize(n,value); }
+
 
     //接口的声明
     public:

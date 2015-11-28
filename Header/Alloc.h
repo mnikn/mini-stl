@@ -107,7 +107,7 @@ namespace mstd{
 
     public:
         static T* allocate(size_t n)                     { return static_cast<T*>(Alloc::allocate(n*sizeof(T))); }
-        static T* allocate(void)                          { }
+        static T* allocate()                                { return static_cast<T*>(Alloc::allocate(sizeof(T))); }
         static void deallocate(T *ptr)                 { Alloc::deallocate(ptr); }
         static void deallocate(T *ptr,size_t n)     { while(n--)  Alloc::deallocate(ptr++); }
 };

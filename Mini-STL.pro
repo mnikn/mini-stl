@@ -21,5 +21,6 @@ HEADERS += \
     Detail/List.impl.h \
     Test/ListTest.h \
     Header/Deque.h \
-    Detail/Deque.impl.h
+    Detail/Deque.impl.h \
+    Header/Auto_ptr.h
 

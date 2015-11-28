@@ -10,7 +10,8 @@ using std::initializer_list;
 using std::ostream;
 
 /**
- * 列表，线性容器，读取和写入数据复杂度为O(n)，插入和删除复杂度为O(1)
+ * 列表，线性容器，元素分配位置零散，
+ * 读取和写入数据复杂度为O(n)，插入和删除复杂度为O(1)
  */
 
 namespace mstd{
