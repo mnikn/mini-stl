@@ -93,12 +93,12 @@ namespace mstd{
         reference operator[](size_type index)                       { return *(start + index); }
         const_reference operator[](size_type index) const    { return *(start + index); }
         vector<T,Alloc>& operator=(const vector<T,Alloc> &v)
-        { allocate_and_copy( v.size() , v.begin() , v.end() ); return *this; }
+        { clear(); allocate_and_copy( v.size() , v.begin() , v.end() ); return *this; }
         template <size_type N>
         vector<T,Alloc>& operator=(const value_type (&array)[N])
-        { allocate_and_copy( N , array , array + N ); return *this; }
+        { clear(); allocate_and_copy( N , array , array + N ); return *this; }
         vector<T,Alloc>& operator=(const initializer_list<T> &i)
-        { allocate_and_copy( i.size() , i.begin() , i.end() ); return *this; }
+        { clear(); allocate_and_copy( i.size() , i.begin() , i.end() ); return *this; }
         bool operator==(const vector<T,Alloc> &v) const;
         bool operator!=(const vector<T,Alloc> &v) const;
 

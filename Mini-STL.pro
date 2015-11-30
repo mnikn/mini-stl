@@ -22,5 +22,8 @@ HEADERS += \
     Test/ListTest.h \
     Header/Deque.h \
     Detail/Deque.impl.h \
-    Header/Auto_ptr.h
+    Header/Auto_ptr.h \
+    Header/Shared_ptr.h \
+    Header/Memory.h \
+    Header/String.h
 

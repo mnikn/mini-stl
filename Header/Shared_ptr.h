@@ -1,17 +1,19 @@
-#ifndef AUTO_PTR_H
-#define AUTO_PTR_H
+#ifndef SHARED_PTR_H
+#define SHARED_PTR_H
 
 #include "Alloc.h"
 #include "Construct.h"
+#include "Uninitialize_funtion.h"
 #include "Type_traits.h"
 
+
 /**
- * 智能指针，可自动回收空间
+ * shared_ptr，可以记录同一地址的指针个数，并回收空间
  */
 namespace mstd{
 
     template <class T,class Alloc = alloc>
-    class auto_ptr{
+    class shared_ptr{
     public:
         typedef T                                                     element_type;
         typedef T*                                                   pointer;
@@ -23,16 +25,15 @@ namespace mstd{
 
 
 
-
-
     protected:
         typename __type_traits<T>::has_trivial_destructor                     has_trivial_destructor;
 
 
 
-    //成员变量
     protected:
         pointer ptr;
+        static size_type count;
+
 
 
     protected:
@@ -41,20 +42,20 @@ namespace mstd{
 
 
 
-
-    //构造函数和析构函数
     public:
-        auto_ptr(pointer _ptr = nullptr):ptr( _ptr )                                            { }
-        auto_ptr(const auto_ptr &p)                                                               { ptr = p.ptr; }
-        ~auto_ptr()                                                                                        { if(can_delete(has_trivial_destructor)) ptr->~T(); }
-
+        shared_ptr(pointer _ptr = nullptr): ptr(_ptr)                                                    { count = 1; }
+        shared_ptr(const shared_ptr &s)                                                                    { ptr = s.ptr; ++count; }
+        ~shared_ptr()                                                                                                { if(can_delete(has_trivial_destructor)) ptr->~T(); }
 
 
 
     //接口
     public:
+        bool unique() const                                                                             { return count==0; }
+        static size_type user_count()                                                                { return count; }
         pointer release() const                                                                        { return ptr; }
         pointer get() const                                                                             { return ptr; }
+
 
 
 
@@ -66,9 +67,19 @@ namespace mstd{
         pointer operator++(int)                                                                      { return ptr++; }
         pointer operator--()                                                                            { return --ptr; }
         pointer operator--(int)                                                                        { return ptr--; }
+    };
 
-};
+    template<class T,class Alloc>
+    size_t shared_ptr<T,Alloc>::count = 0;
+
+    template <class T,class Alloc = alloc>
+    inline shared_ptr<T,Alloc> make_shared()
+    {
+        T* tmp;
+        tmp = simple_alloc<T,Alloc>::allocate();
+        return shared_ptr<T,Alloc>(tmp);
+    }
 
 }
 
-#endif // AUTO_PTR_H
+#endif // SHARED_PTR_H

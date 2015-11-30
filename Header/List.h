@@ -49,9 +49,9 @@ namespace mstd{
 
         link_type node;
 
-        __list_iterator(link_type x):node(x){}
+        __list_iterator(link_type x):node(x)                         { }
         __list_iterator() = default;
-        __list_iterator(const iterator &i):node(i.node){}
+        __list_iterator(const iterator &i):node(i.node)        { }
 
 
         bool operator==(const iterator &i)                      { return node == i.node; }

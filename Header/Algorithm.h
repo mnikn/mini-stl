@@ -142,6 +142,8 @@ namespace mstd{
         while(first != --last)  swap(*first++,*last);
     }
 
+
+
 }
 
 #endif // ALGORITHM_H
