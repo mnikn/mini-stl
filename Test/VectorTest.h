@@ -40,11 +40,20 @@ void test_case3()
 
 }
 
+void test_case4()
+{
+    vector<int> a= {5,1,2,7};
+    a.erase(a.begin(),a.end());
+    assert(a.empty());
+
+}
+
 void test_all()
 {
     test_case1();
     test_case2();
     test_case3();
+    test_case4();
 }
 
 #endif // VECTORTEST_H

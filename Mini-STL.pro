@@ -25,5 +25,8 @@ HEADERS += \
     Header/Auto_ptr.h \
     Header/Shared_ptr.h \
     Header/Memory.h \
-    Header/String.h
+    Header/String.h \
+    Detail/String.impl.h \
+    Test/StringTest.h \
+    Test/AlgorithmTest.h
 

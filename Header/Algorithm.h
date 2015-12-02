@@ -21,6 +21,18 @@ namespace mstd{
         return (a > b? a : b);
     }
 
+    /**
+     * @brief min               返回a和b的最小值
+     * @param a                 元素a
+     * @param b                 元素b
+     * @return                    a和b之间的最小值
+     */
+    template <class T>
+    inline T min(const T &a,const T &b)
+    {
+        return (a < b? a : b);
+    }
+
 
 
     /**
@@ -130,16 +142,143 @@ namespace mstd{
 
 
 
+    /**
+     * @brief for_each                                                  访问区间中的元素
+     * @param first                                                       开始位置
+     * @param last                                                        结束位置
+     * @param visit                                                       访问函数
+     */
+    template <class InputIterator,class FunctionType>
+    inline void for_each(InputIterator first,InputIterator last,FunctionType &visit)
+    {
+        while(first != last)  visit(*first++);
+    }
+
+
+
+
+    /**
+     * @brief for_each                                                  访问容器中的每个元素
+     * @param container                                              容器
+     * @param visit                                                       访问函数
+     */
+    template <class ContainerType,class FunctionType>
+    inline void for_each(ContainerType &container,FunctionType &visit)
+    {
+        for_each(container.begin(),container.end(),visit);
+    }
+
 
     /**
      * @brief reverse                           让里面的元素逆序
      * @param first                             起始位置
      * @param last                              结束位置
      */
-    template <class InputIterator>
-    inline void reverse(InputIterator first,InputIterator last)
+    template <class ForwardIterator>
+    inline void reverse(ForwardIterator first,ForwardIterator last)
     {
-        while(first != --last)  swap(*first++,*last);
+        if(first == last) return;
+        --last;
+        while(first < last)  swap(*(first++),*(last--));
+    }
+
+
+
+    /**
+     * @brief find                          查找值为e的迭代器
+     * @param first                        开始位置
+     * @param last                         结束位置
+     * @param e                            查找的值
+     * @return                               值为e的迭代器，若找不到，则返回last
+     */
+    template <class InputIterator,class T>
+    inline InputIterator find(InputIterator first,InputIterator last,const T &e)
+    {
+        while(first != last){
+            if(*first == e) return first;
+            ++first;
+        }
+        return last;
+    }
+
+
+    /**
+     * @brief find                                      查找值为e的迭代器
+     * @param container                           容器
+     * @param e                                       查找的值
+     * @return                                           值为e的迭代器，若找不到，则返回end
+     */
+    template <class ContainerType,class InputIterator,class T>
+    inline InputIterator find(ContainerType &container,const T &e)
+    {
+        return find(container.begin(),container.end(),e);
+    }
+
+    /**
+     * @brief find_if                       查找值为e的迭代器，仅当条件为visit(*iterator)时
+     * @param first                        开始位置
+     * @param last                         结束位置
+     * @param e                            查找的值
+     * @return                               值为e的迭代器，若找不到，则返回last
+     */
+    template <class InputIterator,class FunctionType>
+    inline InputIterator find_if(InputIterator first,InputIterator last,FunctionType &visit)
+    {
+        while(first != last){
+            if(visit(*first)) return first;
+            ++first;
+        }
+        return last;
+    }
+
+
+
+    /**
+     * @brief find_if                                   查找值为e的迭代器，仅当条件为visit(*iterator)时
+     * @param container                           容器
+     * @param e                                       查找的值
+     * @return                                           值为e的迭代器，若找不到，则返回end
+     */
+    template <class ContainerType,class InputIterator,class FunctionType>
+    inline InputIterator find_if(ContainerType &container,FunctionType &visit)
+    {
+        return find(container.begin(),container.end(),visit);
+    }
+
+
+
+
+
+
+    /**
+     * @brief find                          查找值为e的迭代器
+     * @param first                        开始位置
+     * @param last                         结束位置
+     * @param e                            查找的值
+     * @return                               值为e的迭代器是否在此区间
+     */
+    template <class InputIterator,class T>
+    inline bool is_in(InputIterator first,InputIterator last,const T &e)
+    {
+        while(first != last){
+            if(*first == e) return true;
+            ++first;
+        }
+        return false;
+    }
+
+
+
+    /**
+     * @brief is_in                                       查找值为e的迭代器
+     * @param container                            容器
+     * @param e                                        查找的值
+     * @return                                           值为e的迭代器是否在此区间
+     */
+    template <class ContainerType,class InputIterator,class T>
+    inline InputIterator is_in(ContainerType &container,const T &e)
+    {
+        return is_in(container.begin(),container.end(),e);
     }
 
 

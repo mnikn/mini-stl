@@ -126,7 +126,7 @@ namespace mstd{
         }
         size_type n = static_cast<size_type>(last - first);
         finish -= n;
-        destory(finish,finish + n);
+        destory(first,last);
         return last;
     }
 

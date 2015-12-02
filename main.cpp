@@ -1,8 +1,7 @@
 #include <iostream>
 #include <memory>
-#include "Test/VectorTest.h"
+#include "Test/AlgorithmTest.h"
 #include "Header/Deque.h"
-#include "Header/Algorithm.h"
 #include "Header/String.h"
 #include "Header/Memory.h"
 using std::cout;
@@ -13,7 +12,7 @@ using namespace mstd;
 
 int main()
 {
-    string s = "SDAD";
+    test_all();
     return 0;
 }
 

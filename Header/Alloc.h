@@ -6,9 +6,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <climits>
-using std::cout;
-using std::ends;
-using std::endl;
 using std::cerr;
 
 /**

@@ -91,7 +91,7 @@ namespace mstd{
     //运算符的重载
     public:
         reference operator[](size_type index)                       { return *(start + index); }
-        const_reference operator[](size_type index) const    { return *(start + index); }
+        const_reference operator[](size_type index) const    { return static_cast<const_reference>((*this)[index]); }
         vector<T,Alloc>& operator=(const vector<T,Alloc> &v)
         { clear(); allocate_and_copy( v.size() , v.begin() , v.end() ); return *this; }
         template <size_type N>

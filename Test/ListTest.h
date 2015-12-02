@@ -37,10 +37,18 @@ void test_case2()
     assert(a.empty());
 }
 
+void test_case3()
+{
+    list<int> a= {3,4,63,7};
+    a.erase(a.begin());
+    assert(a[0]==4 && a.size()==3);
+}
+
 void test_all()
 {
     test_case1();
     test_case2();
+    test_case3();
 }
 
 #endif // LISTTEST_H
