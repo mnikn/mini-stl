@@ -2,11 +2,13 @@
 #define ALGORITHM_H
 
 #include <cstddef>
+#include "Iterator.h"
 
 /**
  * 算法库，提供各种算法给容器
  */
 namespace mstd{
+
 
 
     /**
@@ -32,7 +34,6 @@ namespace mstd{
     {
         return (a < b? a : b);
     }
-
 
 
     /**
@@ -281,7 +282,34 @@ namespace mstd{
         return is_in(container.begin(),container.end(),e);
     }
 
+    /******************************************************************************
+    ********************************Heap算法************************************
+    ******************************************************************************/
 
+    template <class RandomAccessIterator>
+    inline void push_heap(RandomAccessIterator first,RandomAccessIterator last)
+    {
+        __push_heap_aux(first,last,difference_type(first),value_type(first));
+    }
+
+    template <class RandomAccessIterator,class Distance,class T>
+    inline void __push_heap_aux(RandomAccessIterator first,RandomAccessIterator last,Distance*,T*)
+    {
+        __push_heap(first,Distance( (last - first) - 1) , Distance(0) , T(*(last - 1)));
+    }
+
+    template <class RandomAccessIterator,class Distance,class T>
+    inline void __push_heap(RandomAccessIterator first,RandomAccessIterator last,
+                            Distance holeIndex,Distance topIndex,T value)
+    {
+        Distance parent = (holeIndex - 1)/2;
+        while(holeIndex > topIndex && *(first + parent) < value){
+            *(first + holeIndex) = *(first + topIndex);
+            holeIndex = parent;
+            parent = (holeIndex - 1)/2;
+        }
+        *(first + holeIndex) = value;
+    }
 
 }
 

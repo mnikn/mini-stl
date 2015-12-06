@@ -25,10 +25,6 @@ namespace mstd{
 
 
 
-    protected:
-        typename __type_traits<T>::has_trivial_destructor                     has_trivial_destructor;
-
-
 
     protected:
         pointer ptr;
@@ -36,16 +32,11 @@ namespace mstd{
 
 
 
-    protected:
-        bool can_delete(__true_type)                                                            { return true; }
-        bool can_delete(__false_type)                                                           { return false; }
-
-
 
     public:
         shared_ptr(pointer _ptr = nullptr): ptr(_ptr)                                                    { count = 1; }
         shared_ptr(const shared_ptr &s)                                                                    { ptr = s.ptr; ++count; }
-        ~shared_ptr()                                                                                                { if(can_delete(has_trivial_destructor)) ptr->~T(); }
+        ~shared_ptr()                                                                                                { delete ptr; }
 
 
 
@@ -76,7 +67,7 @@ namespace mstd{
     inline shared_ptr<T,Alloc> make_shared()
     {
         T* tmp;
-        tmp = simple_alloc<T,Alloc>::allocate();
+        tmp = new T();
         return shared_ptr<T,Alloc>(tmp);
     }
 

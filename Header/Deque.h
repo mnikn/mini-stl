@@ -8,10 +8,14 @@
 
 /**
  * 双头队列，元素的空间位置连续，空间由map来控制，
- * 一个map里面有一段连续的内存空间，map与map之间不连续
+ * 一个map里面有一段连续的内存空间，空间大小用BufSize表示
  */
 namespace mstd{
 
+    // 若n不为0，传回n，表示buffer size由用户定义
+    // n为0，表示buffer size使用默认值
+    // 若元素大小size小于512，传回512/size
+    // 若size不小于512，传回1
     inline size_t __deque_buf_size(size_t n,size_t size)
     {
         return n!=0?n:(size<512?static_cast<size_t>(512/size):static_cast<size_t>(1));
@@ -48,10 +52,10 @@ namespace mstd{
         }
 
         reference operator*() const                                             { return *cur; }
-        pointer operator->() const                                              { return cur; }
+        pointer operator->() const                                              { return &(operator*()); }
         reference operator[](difference_type n) const                  { return *(*this+n); }
         bool operator==(const self &x) const                             { return cur == x.cur; }
-        bool operator!=(const self &x) const                              { return !(*this==x); }
+        bool operator!=(const self &x) const                              { return *this!=x; }
         bool operator>(const self &x) const                               { return (node==x.node)?(cur<x.cur):(node<x.node); }
         difference_type operator-(const self &x) const
         { return static_cast<difference_type>(buffer_size()) * (node - x.node - 1) + (cur - first) + (x.last- x.cur); }
@@ -72,12 +76,12 @@ namespace mstd{
         }
         self& operator--()
         {
-            --cur;
             if(cur == first){
                 set_node(node-1);
                 cur = last;
                 --cur;
             }
+            --cur;
             return *this;
         }
         self operator--(int)
@@ -97,7 +101,7 @@ namespace mstd{
                             offset/static_cast<difference_type>(buffer_size()):
                             -static_cast<difference_type>((offset-1)/buffer_size())-1;
                 set_node(node + node_offset);
-                cur = first (offset - node_offset * static_cast<difference_type>(buffer_size()));
+                cur = first + (offset - node_offset * static_cast<difference_type>(buffer_size()));
             }
             return *this;
         }
@@ -124,7 +128,7 @@ namespace mstd{
 
 
 
-    template <class T,class Alloc = alloc,size_t BufSize = 0>
+    template <class T,class Alloc = alloc,size_t BufSize = 20>
     class deque{
     public:
         typedef T                                                                                  value_type;
@@ -144,10 +148,18 @@ namespace mstd{
         typedef simple_alloc<pointer,Alloc>                                          map_allocator;
 
 
+    //辅助函数
     protected:
-        void allocate_node();
+        pointer allocate_node();
+        void reserve_at_back(size_type nodes_to_add = 1);
+        void reserve_at_front(size_type nodes_to_add = 1);
+        void reallocate_map(size_type nodes_to_add,bool add_at_front);
         void create_map_and_node(size_type num_elements);
         void fill_initialize(size_type n,const_reference value);
+        void copy_initialize(iterator first,iterator last);
+        void push_back_aux(const_reference e);
+        void push_front_aux(const_reference e);
+
 
 
     //成员变量
@@ -160,7 +172,10 @@ namespace mstd{
 
     //构造函数和析构函数
     public:
-        //deque(size_type n,const_reference value):start(0),finish(0),map(0),map_size(0)  { fill_initialize(n,value); }
+        deque():map(0),map_size(0)                                                                { fill_initialize(0,value_type()); }
+        deque(size_type n):map(0),map_size(0)                                               { fill_initialize(n,value_type()); }
+        explicit deque(size_type n,const_reference value):map(0),map_size(0)  { fill_initialize(n,value); }
+        deque(deque &d):map(0),map_size(0)                                                 { copy_initialize(d.begin(),d.end()); }
 
 
     //接口的声明
@@ -181,12 +196,14 @@ namespace mstd{
         bool empty() const                                             { return size()==0; }
 
 
-
+        //修改容器相关
+        void push_back(const_reference e);
+        void push_front(const_reference e);
 
 
     //运算符的重载
     public:
-        reference operator[](size_type i)                          { return *(start+i); }
+        reference operator[](size_type n)                          { return start[static_cast<difference_type>(n)]; }
         const_reference operator[](size_type i) const       { return static_cast<const_reference>(*this[i]); }
 
     };

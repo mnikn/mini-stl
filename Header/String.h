@@ -22,7 +22,7 @@ namespace mstd{
 
     //构造函数和析构函数
     public:
-        string():vector<char>()                                                                                 { }
+        string():vector<char>()                                                                                { }
         string(const string &s):vector<char>(s)                                                        { }
         template <size_type N>
         string(const char (&array)[N]):vector<char>(array)                                       { }

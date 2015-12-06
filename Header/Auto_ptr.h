@@ -25,19 +25,10 @@ namespace mstd{
 
 
 
-    protected:
-        typename __type_traits<T>::has_trivial_destructor                     has_trivial_destructor;
-
-
-
     //成员变量
     protected:
         pointer ptr;
 
-
-    protected:
-        bool can_delete(__true_type)                                                            { return true; }
-        bool can_delete(__false_type)                                                           { return false; }
 
 
 
@@ -46,7 +37,7 @@ namespace mstd{
     public:
         auto_ptr(pointer _ptr = nullptr):ptr( _ptr )                                            { }
         auto_ptr(const auto_ptr &p)                                                               { ptr = p.ptr; }
-        ~auto_ptr()                                                                                        { if(can_delete(has_trivial_destructor)) ptr->~T(); }
+        ~auto_ptr()                                                                                        { delete ptr; }
 
 
 
