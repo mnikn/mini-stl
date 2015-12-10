@@ -31,5 +31,6 @@ HEADERS += \
     Test/AlgorithmTest.h \
     Test/DequeTest.h \
     Header/Stack.h \
-    Test/StackTest.h
+    Test/StackTest.h \
+    Header/Queue.h
 

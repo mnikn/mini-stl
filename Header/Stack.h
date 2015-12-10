@@ -8,6 +8,15 @@ namespace mstd{
 
     template <class T,class Sequence = deque<T>>
     class stack{
+        friend bool operator==(const stack<T,Sequence> &a,const stack<T,Sequence> &b)
+        { return a.top()==b.top(); }
+        friend bool operator!=(const stack<T,Sequence> &a,const stack<T,Sequence> &b)
+        { return !(a==b); }
+        friend bool operator>(const stack<T,Sequence> &a,const stack<T,Sequence> &b)
+        { return a.top()>b.top(); }
+        friend bool operator<(const stack<T,Sequence> &a,const stack<T,Sequence> &b)
+        { return !(a>b || a ==b); }
+
     public:
         typedef typename deque<T>::value_type                  value_type;
         typedef typename deque<T>::pointer                        pointer;
