@@ -4,6 +4,8 @@
 #include "Alloc.h"
 #include "Uninitialize_funtion.h"
 #include "Iterator.h"
+#include <iostream>
+using std::ostream;
 
 
 /**
@@ -119,6 +121,11 @@ namespace mstd{
             self tmp = *this;
             return tmp -= n;
         }
+        friend ostream& operator<<(ostream& os,self s)
+        {
+            os<<s.cur;
+            return os;
+        }
 
     };
 
@@ -151,14 +158,16 @@ namespace mstd{
     //辅助函数
     protected:
         pointer allocate_node();
+        void deallocate_node(pointer ptr);
         void reserve_at_back(size_type nodes_to_add = 1);
         void reserve_at_front(size_type nodes_to_add = 1);
         void reallocate_map(size_type nodes_to_add,bool add_at_front);
         void create_map_and_node(size_type num_elements);
         void fill_initialize(size_type n,const_reference value);
-        void copy_initialize(iterator first,iterator last);
         void push_back_aux(const_reference e);
         void push_front_aux(const_reference e);
+        value_type pop_back_aux();
+        value_type pop_front_aux();
 
 
 
@@ -175,7 +184,6 @@ namespace mstd{
         deque():map(0),map_size(0)                                                                { fill_initialize(0,value_type()); }
         deque(size_type n):map(0),map_size(0)                                               { fill_initialize(n,value_type()); }
         explicit deque(size_type n,const_reference value):map(0),map_size(0)  { fill_initialize(n,value); }
-        deque(deque &d):map(0),map_size(0)                                                 { copy_initialize(d.begin(),d.end()); }
 
 
     //接口的声明
@@ -199,6 +207,8 @@ namespace mstd{
         //修改容器相关
         void push_back(const_reference e);
         void push_front(const_reference e);
+        value_type pop_back();
+        value_type pop_front();
 
 
     //运算符的重载

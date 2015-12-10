@@ -75,9 +75,7 @@ namespace mstd{
 
     template <class T,class Alloc = alloc>
     class list{
-    protected:
-        typedef __list_node<T>                                          list_node;
-        typedef list_node*                                                  link_type;
+    public:
         typedef T                                                               value_type;
         typedef __list_iterator<T>                                       iterator;
         typedef const __list_iterator<T>                              const_iterator;
@@ -88,7 +86,10 @@ namespace mstd{
 
 
     protected:
+        typedef __list_node<T>                                           list_node;
+        typedef list_node*                                                   link_type;
         typedef simple_alloc<list_node,Alloc>                     allocator_type;
+
 
 
     //成员变量

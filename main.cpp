@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Test/DequeTest.h"
+#include "Test/StackTest.h"
 using std::cout;
 using std::ends;
 using std::endl;

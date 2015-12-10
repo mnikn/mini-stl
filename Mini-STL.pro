@@ -29,5 +29,7 @@ HEADERS += \
     Detail/String.impl.h \
     Test/StringTest.h \
     Test/AlgorithmTest.h \
-    Test/DequeTest.h
+    Test/DequeTest.h \
+    Header/Stack.h \
+    Test/StackTest.h
 

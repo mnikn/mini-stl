@@ -11,6 +11,12 @@ namespace mstd{
     }
 
     template <class T,class Alloc,size_t BufSize>
+    void deque<T,Alloc,BufSize>::deallocate_node(pointer ptr)
+    {
+        data_allocator::deallocate(ptr);
+    }
+
+    template <class T,class Alloc,size_t BufSize>
     void deque<T,Alloc,BufSize>::reserve_at_back(size_type nodes_to_add)
     {
         if(nodes_to_add + 1 > map_size - (finish.node - map)){
@@ -86,14 +92,6 @@ namespace mstd{
     }
 
     template <class T,class Alloc,size_t BufSize>
-    void deque<T,Alloc,BufSize>::copy_initialize(iterator first,iterator last)
-    {
-        create_map_and_node(static_cast<size_type>(last - first));
-        map_pointer cur = start.node;
-        uninitialize_copy(first,last,*cur);
-    }
-
-    template <class T,class Alloc,size_t BufSize>
     void deque<T,Alloc,BufSize>::push_back_aux(const_reference e)
     {
         value_type e_copy = e;
@@ -113,6 +111,28 @@ namespace mstd{
         start.set_node(start.node - 1);
         start.cur = start.last - 1;
         construct(start.cur,e_copy);
+    }
+
+    template <class T,class Alloc,size_t BufSize>
+    typename deque<T,Alloc,BufSize>::value_type deque<T,Alloc,BufSize>::pop_back_aux()
+    {
+        value_type tmp = back();
+        deallocate_node(finish.first);
+        finish.set_node(finish.node-1);
+        finish.cur = finish.last - 1;
+        destory(finish.cur);
+        return tmp;
+    }
+
+    template <class T,class Alloc,size_t BufSize>
+    typename deque<T,Alloc,BufSize>::value_type deque<T,Alloc,BufSize>::pop_front_aux()
+    {
+        value_type tmp = front();
+        destory(start.cur);
+        deallocate_node(start.first);
+        start.set_node(start.node+1);
+        start.cur = start.first;
+        return tmp;
     }
 
     template <class T,class Alloc,size_t BufSize>
@@ -136,6 +156,34 @@ namespace mstd{
         }
         else{
             push_front_aux(e);
+        }
+    }
+
+    template <class T,class Alloc,size_t BufSize>
+    typename deque<T,Alloc,BufSize>::value_type deque<T,Alloc,BufSize>::pop_back()
+    {
+        if(finish.cur != finish.first){
+            value_type tmp = back();
+            --finish.cur;
+            destory(finish.cur);
+            return tmp;
+        }
+        else{
+            return pop_back_aux();
+        }
+    }
+
+    template <class T,class Alloc,size_t BufSize>
+    typename deque<T,Alloc,BufSize>::value_type deque<T,Alloc,BufSize>::pop_front()
+    {
+        if(start.cur != start.last - 1){
+            value_type tmp = front();
+            destory(finish.cur);
+            ++start.cur;
+            return tmp;
+        }
+        else{
+            return pop_front_aux();
         }
     }
 }
