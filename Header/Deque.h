@@ -168,6 +168,7 @@ namespace mstd{
         void push_front_aux(const_reference e);
         value_type pop_back_aux();
         value_type pop_front_aux();
+        iterator insert_aux(iterator pos,const_reference e);
 
 
 
@@ -205,10 +206,14 @@ namespace mstd{
 
 
         //修改容器相关
+        void clear();
         void push_back(const_reference e);
         void push_front(const_reference e);
         value_type pop_back();
         value_type pop_front();
+        iterator insert(iterator pos,const_reference e);
+        value_type erase(iterator pos);
+        iterator erase(iterator first,iterator last);
 
 
     //运算符的重载

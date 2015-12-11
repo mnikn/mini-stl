@@ -43,8 +43,9 @@ namespace mstd{
         const_reference front() const                                     { return static_cast<const_reference>(front()); }
 
         //修改容器相关
-        void push(const_reference e)                                   { _container.push_back(e); }
-        value_type pop()                                                      { return _container.pop_back(); }
+        void clear()                                                                { _container.clear(); }
+        void push(const_reference e)                                     { _container.push_back(e); }
+        value_type pop()                                                        { return _container.pop_back(); }
     };
 }
 
