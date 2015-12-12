@@ -4,6 +4,10 @@
 #include "Deque.h"
 using mstd::deque;
 
+
+/**
+ * 队列，元素的空间位置连续，由双头队列配接而成
+ */
 namespace mstd{
 
     template <class T,class Sequence = deque<T>>

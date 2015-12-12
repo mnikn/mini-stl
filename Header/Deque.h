@@ -57,7 +57,7 @@ namespace mstd{
         pointer operator->() const                                              { return &(operator*()); }
         reference operator[](difference_type n) const                  { return *(*this+n); }
         bool operator==(const self &x) const                             { return cur == x.cur; }
-        bool operator!=(const self &x) const                              { return *this!=x; }
+        bool operator!=(const self &x) const                              { return !(*this ==x); }
         bool operator>(const self &x) const                               { return (node==x.node)?(cur<x.cur):(node<x.node); }
         difference_type operator-(const self &x) const
         { return static_cast<difference_type>(buffer_size()) * (node - x.node - 1) + (cur - first) + (x.last- x.cur); }

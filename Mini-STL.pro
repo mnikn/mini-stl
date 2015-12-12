@@ -5,6 +5,7 @@ CONFIG -= qt
 CONFIG +=c++11
 
 SOURCES += main.cpp \
+    Detail/BigInt.cpp
 
 HEADERS += \
     Header\Alloc.h \
@@ -33,5 +34,6 @@ HEADERS += \
     Header/Stack.h \
     Test/StackTest.h \
     Header/Queue.h \
-    Test/QueueTest.h
+    Test/QueueTest.h \
+    Header/BigInt.h
 
